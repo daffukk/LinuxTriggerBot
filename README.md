@@ -4,7 +4,7 @@ The TriggerBot that works in any game by detecting a new pixel in the center of 
 
 ## TODO
 * Create auto keyboard event pick
-* Fix image noise and false shots
+* Fully fix image noise and false shots
 
 ## Setup
 You must install some packages.

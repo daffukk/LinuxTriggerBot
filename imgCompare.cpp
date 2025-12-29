@@ -15,5 +15,6 @@ bool differentpixels(std::string clipPath, std::string actionPath) {
   int counter = cv::countNonZero(diff);
 
   std::cout << diff << std::endl;
-  return counter > 40;
+  std::cout << counter << std::endl;
+  return counter > 55;
 }
