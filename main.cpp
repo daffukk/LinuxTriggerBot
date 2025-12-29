@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include <thread>
 #include <linux/input.h>
 #include <unistd.h>
@@ -6,6 +7,8 @@
 #include <filesystem>
 #include <chrono>
 #include <atomic>
+#include <fstream>
+#include "header.h"
 
 std::atomic<bool> hold(false);
 std::atomic<bool> running(true);
@@ -29,14 +32,14 @@ public:
     return delay;
   }
   
-  void screenClip() {
-    system("grim -g \"1715,715 10x10\" clip.png"); 
-//    system("magick clip.png clip.ppm");
+  void screenClip(int width, int height) {
+    std::string cmd = "grim -g \"" + std::to_string(width) + "," + std::to_string(height) + " 10x10\" clip.png";
+    system(cmd.c_str()); 
   }
 
-  void screenStart(){
-    system("grim -g \"1715,715 10x10\" action.png"); 
- //   system("magick action.png action.ppm");
+  void screenStart(int width, int height){
+    std::string cmd = "grim -g \"" + std::to_string(width) + "," + std::to_string(height) + " 10x10\" action.png";
+    system(cmd.c_str()); 
   }
 
   short getKeyCode(){
@@ -46,10 +49,10 @@ public:
 };
 
 int keyLog(short actionKey) { 
-    system("sudo chmod a+r /dev/input/event10"); //needs to access the /dev/input/event* file  
-    system("ydotoold > /dev/null 2>&1 &");
-    const char* device = "/dev/input/event10";  // you need to pick your keyboard here
-    int fd = open(device, O_RDONLY); 
+    system("sudo chmod a+r /dev/input/event3"); // needs to access the /dev/input/event* file  
+    system("ydotoold > /dev/null 2>&1 &"); // ydotool daemon
+    std::string device = "/dev/input/event3";  // you need to pick your keyboard here
+    int fd = open(device.c_str(), O_RDONLY); 
     if (fd == -1) {
       std::cerr << "Failed to open a device " << device << ". Try sudo.\n";
       return 1;
@@ -62,7 +65,6 @@ int keyLog(short actionKey) {
       if (n == (ssize_t)sizeof(ev)) {
         if (ev.type == EV_KEY) {
           if (ev.value == 1) {
-//           std::cout << "Key pressed: code " << ev.code << std::endl;
             if (ev.code == 54) { //rShift to exit
               std::cout << "Exit.\n";
               running = false;
@@ -90,8 +92,44 @@ int keyLog(short actionKey) {
 
 int main() {
 
+  int screenWidth;
+  int screenHeight;
+  int triggerDelay;
+
+  if(!std::filesystem::exists("config.cfg")) { 
+
+    std::ofstream file("config.cfg");
+  
+    std::cout << "Enter your screen width: ";
+    std::cin >> screenWidth;
+    file << screenWidth << "\n";
+  
+    std::cout << "Enter your screen height: ";
+    std::cin >> screenHeight;
+    file << screenHeight << "\n";
+
+    std::cout << "Enter triggerbot delay (70 is highly recommended): ";
+    std::cin >> triggerDelay;
+    file << triggerDelay << "\n";
+
+  } else {
+
+    std::ifstream file("config.cfg");
+    
+    if(file.is_open()) {
+      file >> screenWidth >> screenHeight >> triggerDelay;
+    }
+  }
+
+  std::cout << "Using " << screenWidth << "x" << screenHeight << " resolution.\n";
+  std::cout << "Delay: " << triggerDelay << "ms\n"; 
+
+
+  screenWidth = (screenWidth / 2) - 5;
+  screenHeight = (screenHeight / 2) - 5;
+
   Trigger trig;
-  trig.setDelay(70); //ms
+  trig.setDelay((short)triggerDelay); //ms
   trig.setKey(58); //CAPSLOCK
 
   std::thread keyThread(keyLog, trig.getKeyCode()); 
@@ -107,21 +145,16 @@ int main() {
 
     if (hold){
       if (!clipExist) {
-        trig.screenClip();
+        trig.screenClip(screenWidth, screenHeight);
         clipExist = true;
       }
-      trig.screenStart();
+      trig.screenStart(screenWidth, screenHeight);
       
-      unsigned int clipSize = std::filesystem::file_size(clip);
-      unsigned int actionSize = std::filesystem::file_size(action);
-
-      const unsigned int tolerance = 13;
-
-      if(std::abs((int)clipSize - (int)actionSize) > tolerance) {
-        std::cout << "SHOT!!!\n";
+      if(differentpixels(clip.string(), action.string())) {
         if (!singleClick) {
           std::this_thread::sleep_for(std::chrono::milliseconds(trig.getDelay()));
           system("ydotool click 0xC0");
+          std::cout << "SHOT!!!\n";
           singleClick = true;
         }
       }
@@ -131,7 +164,7 @@ int main() {
       clipExist = false;
       singleClick = false;
     }
-    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
   }
 
   
