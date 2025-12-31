@@ -48,13 +48,14 @@ public:
 
 };
 
-int keyLog(short actionKey) { 
-    system("sudo chmod a+r /dev/input/event3"); // needs to access the /dev/input/event* file  
+int keyLog(short actionKey, std::string keyboardEvent) { 
+
+    std::string cmd = "sudo chmod a+r " + keyboardEvent;
+    system(cmd.c_str()); // needs to access the /dev/input/eventX file  
     system("ydotoold > /dev/null 2>&1 &"); // ydotool daemon
-    std::string device = "/dev/input/event3";  // you need to pick your keyboard here
-    int fd = open(device.c_str(), O_RDONLY); 
+    int fd = open(keyboardEvent.c_str(), O_RDONLY); 
     if (fd == -1) {
-      std::cerr << "Failed to open a device " << device << ". Try sudo.\n";
+      std::cerr << "Failed to open a device " << keyboardEvent << ". Try sudo.\n";
       return 1;
     }
     
@@ -95,6 +96,7 @@ int main() {
   int screenWidth;
   int screenHeight;
   int triggerDelay;
+  std::string keyboardEvent;
 
   if(!std::filesystem::exists("config.cfg")) { 
 
@@ -112,12 +114,16 @@ int main() {
     std::cin >> triggerDelay;
     file << triggerDelay << "\n";
 
+    std::cout << "Enter your keyboard event path (/dev/input/eventX): ";
+    std::cin >> keyboardEvent;
+    file << keyboardEvent << "\n";
+
   } else {
 
     std::ifstream file("config.cfg");
     
     if(file.is_open()) {
-      file >> screenWidth >> screenHeight >> triggerDelay;
+      file >> screenWidth >> screenHeight >> triggerDelay >> keyboardEvent;
     }
   }
 
@@ -132,7 +138,7 @@ int main() {
   trig.setDelay((short)triggerDelay); //ms
   trig.setKey(58); //CAPSLOCK
 
-  std::thread keyThread(keyLog, trig.getKeyCode()); 
+  std::thread keyThread(keyLog, trig.getKeyCode(), keyboardEvent); 
 
   bool clipExist = false;
   bool singleClick = false;
