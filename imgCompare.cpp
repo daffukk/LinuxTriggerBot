@@ -1,5 +1,6 @@
 #include <iostream>
 #include <opencv2/opencv.hpp>
+#include <ostream>
 #include <string>
 
 bool differentpixels(std::string clipPath, std::string actionPath) {
@@ -14,7 +15,7 @@ bool differentpixels(std::string clipPath, std::string actionPath) {
 
   int counter = cv::countNonZero(diff);
 
-  std::cout << diff << std::endl;
-  std::cout << counter << std::endl;
+//  std::cout << "\r" << diff << std::flush;
+  std::cout << "\r" << counter << std::flush;
   return counter > 55;
 }
