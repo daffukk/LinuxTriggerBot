@@ -13,7 +13,6 @@ Tested on:
 # Setup
 You must install some packages.
 
-> There maybe will be some issues with opencv, if you have those, check [Tips and issues](#tips-and-issues) section.
 
 ```bash 
 cmake
@@ -31,6 +30,10 @@ grim
 
 Run `./build.sh` to compile application.
 
+> [!WARNING]
+> There might be some issues with opencv, if you have those, check [Tips and issues](#tips-and-issues) section.
+
+
 Run `./LinuxTriggerBot` in the project directory:
 
 * Enter your screen resolution
@@ -43,6 +46,15 @@ Ingame you need to hold capslock and do not move camera.
 ---
 
 # Tips and issues
+
+> [!IMPORTANT]
+> If you have issues with compiling, try to install these packages:
+> ```bash
+> hdf5
+> vtk
+> ```
+>
+
 
 > [!TIP]
 > If you want to change keyboard, just add **`-k`** flag next to the applicaton. 
