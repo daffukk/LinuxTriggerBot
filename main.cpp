@@ -1,3 +1,4 @@
+#include <cstring>
 #include <iostream>
 #include <string>
 #include <thread>
@@ -8,6 +9,7 @@
 #include <chrono>
 #include <atomic>
 #include <fstream>
+#include <vector>
 #include "header.h"
 
 std::atomic<bool> hold(false);
@@ -91,7 +93,7 @@ int keyLog(short actionKey, std::string keyboardEvent) {
 }
 
 
-int main() {
+int main(int argc, char* argv[]) {
 
   int screenWidth;
   int screenHeight;
@@ -118,6 +120,25 @@ int main() {
     file << keyboardEvent << "\n";
 
   } else {
+
+    if(argc > 1 && strcmp(argv[1], "-k") == 0) {
+      std::ifstream in("config.cfg");
+      std::vector<std::string> lines;
+
+      for(std::string line; std::getline(in, line);) {
+        lines.push_back(line);
+      }
+
+      if(!lines.empty()) lines.pop_back();
+      
+      std::ofstream out("config.cfg");
+      for(int i=0; i<lines.size(); i++) {
+        out << lines[i] << "\n";
+      }
+      keyboardEvent = findKeyboard();
+      out << keyboardEvent << "\n";
+
+    }
 
     std::ifstream file("config.cfg");
     

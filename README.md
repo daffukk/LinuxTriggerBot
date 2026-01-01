@@ -44,5 +44,10 @@ Ingame you need to hold capslock and do not move camera.
 
 # Tips and issues
 
-There's nothing here for now.
+> [!TIP]
+> If you want to change keyboard, just add **`-k`** flag next to the applicaton. 
+> ```bash
+> ./LinuxTriggerBot -k
+> ```
+>
 
