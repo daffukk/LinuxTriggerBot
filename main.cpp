@@ -114,8 +114,7 @@ int main() {
     std::cin >> triggerDelay;
     file << triggerDelay << "\n";
 
-    std::cout << "Enter your keyboard event path (/dev/input/eventX): ";
-    std::cin >> keyboardEvent;
+    keyboardEvent = findKeyboard();
     file << keyboardEvent << "\n";
 
   } else {

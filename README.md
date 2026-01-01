@@ -7,7 +7,7 @@ Tested on:
 
 ## TODO
 - [X] Create config file to minimize interaction with code
-- [ ] Create auto keyboard event pick
+- [X] Create auto keyboard event pick
 - [ ] Fully fix image noise and false shots
 
 # Setup
@@ -16,6 +16,7 @@ You must install some packages.
 > There maybe will be some issues with opencv, if you have those, check [Tips and issues](#tips-and-issues) section.
 
 ```bash 
+cmake
 opencv
 ydotool
 grim
@@ -36,8 +37,6 @@ Run `./LinuxTriggerBot` in the project directory:
 * Enter delay(70 is recommended)
 * Enter your keyboard device event
 
-> [!IMPORTANT]
-> Check [Tips and issues](#tips-and-issues) for keyboard event information
 
 Ingame you need to hold capslock and do not move camera.
 
@@ -45,20 +44,5 @@ Ingame you need to hold capslock and do not move camera.
 
 # Tips and issues
 
-### Keyboard event
-1. Showing all keyboard devices:
-```bash
-ls /dev/input/by-id/ | grep kbd
-``` 
-2. Pick your keyboard from received list:
-```bash
-usb-MY_KEYBOARD-event-kbd -> ../event2
-usb-ANOTHER_KEYBOARD-event-kbd -> ../event17
-usb-SOME_KEYBOARD-if01-event-kbd -> ../event20
-usb-MY_MICE_KEYBOARD_IDK_WHAT_ITS_DOING_HERE-if01-event-kbd -> ../event11
-```
-3. Copy your keyboard event path and paste it into application or to config instead:
-```bash
-/dev/input/event2
-```
+There's nothing here for now.
 

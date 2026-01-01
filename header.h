@@ -3,3 +3,4 @@
 
 
 bool differentpixels(std::string clipPath, std::string actionPath);
+std::string findKeyboard();

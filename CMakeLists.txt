@@ -6,5 +6,5 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(OpenCV REQUIRED)
 
-add_executable(LinuxTriggerBot main.cpp imgCompare.cpp)
+add_executable(LinuxTriggerBot main.cpp keyboardDetecter.cpp imgCompare.cpp)
 target_link_libraries(LinuxTriggerBot ${OpenCV_LIBS})
