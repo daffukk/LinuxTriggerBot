@@ -1,4 +1,0 @@
-usb-ROYUAN_Gaming_Keyboard-event-kbd
-usb-SEMICO_USB_Gaming_Keyboard-event-kbd
-usb-SEMICO_USB_Gaming_Keyboard-if01-event-kbd
-usb-WL_WLMOUSE_BEAST_MAX_EA5863D9-if01-event-kbd
